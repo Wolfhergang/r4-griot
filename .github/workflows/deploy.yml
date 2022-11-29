@@ -13,13 +13,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install dependencies
+      - name: Install dependencies...
         run: |
           npm i
-      - name: npm build function 
+      - name: Bundle and wrap it...
         run: |
           npm run build
-      - name: zip function
+      - name: Wrap it up...
         run: zip -r bundle.zip ./index.js ./package.json ./package-lock.json ./node_modules
       - name: default deploy
         uses: appleboy/lambda-action@master
@@ -29,7 +29,6 @@ jobs:
           aws_region: us-east-2
           function_name: griot
           zip_file: bundle.zip
+          runtime: nodejs18.x
           memory_size: 128
           timeout: 10
-          dry_run: true
-          runtime: nodejs18.x
