@@ -13,16 +13,16 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install and build
+      - name: npm install dependencies
         run: |
-          npm i
-          npm run build
+          npm ci
         env:
           CI: true
-      - name: zip
-        uses: montudor/action-zip@v0.1.0
-        with:
-          args: zip -qq -r ./bundle.zip ./
+      - name: npm build function 
+        run: |
+          npm run build
+      - name: zip function
+        run: zip -r bundle.zip ./index.js ./package.json ./package-lock.json ./node_modules
       - name: default deploy
         uses: appleboy/lambda-action@master
         with:
