@@ -29,3 +29,7 @@ jobs:
           aws_region: us-east-2
           function_name: griot
           zip_file: bundle.zip
+          memory_size: 128
+          timeout: 10
+          dry_run: true
+          runtime: nodejs18.x
