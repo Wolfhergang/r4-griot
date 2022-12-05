@@ -42,29 +42,33 @@ enum MessageType {
   INTERACTIVE = 'interactive'
 }
 
-type MessageEntry = {
-  changes: Array<{
-    value: {
-      messages: Array<{
-        from: string,
-        id: string,
-        timestamp: string,
-        type: MessageType,
-        [key: string]: any
-      }>,
-    }
-  }>,
+type WhatsappMessageBody = {
+  object: 'whatsapp_business_account',
+  entry: {
+    id: string,
+    changes: Array<{
+      value: {
+        messages: Array<{
+          from: string,
+          id: string,
+          timestamp: string,
+          type: MessageType,
+          [key: string]: any
+        }>,
+      }
+    }>,
+  }
 }
 
 const handleReceivingMessage = async (req: Request, res: Response, config: BotConfig) => {
   try {
-    const messageEntry = req.body as MessageEntry;
+    const messageEntry = req.body as WhatsappMessageBody;
     
     const {
       from,
       type,
       ...rest
-    } = messageEntry.changes[0].value.messages[0];
+    } = messageEntry.entry.changes[0].value.messages[0];
   
     if(type !== MessageType.TEXT) {
       // Not supporting other types of messages... yet
