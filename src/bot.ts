@@ -7,6 +7,8 @@ export type BotConfig = {
   TOKEN: string,
 }
 
+let singletonBot: Bot | null = null
+
 const initializeBot = async (config: BotConfig, app: Application) => {
   try {
     // replace the values below
@@ -14,24 +16,26 @@ const initializeBot = async (config: BotConfig, app: Application) => {
     const from : string = config.PHONE_ID
     const token : string = config.TOKEN
     
+    if(singletonBot) 
+      return true
+
     // Create a bot that can send messages
-    const bot : Bot = createBot(from, token);
+    singletonBot = createBot(from, token);
 
     console.log('[server]: Bot created, token:', token.slice(0, 5)+'...')
 
     // Start express server to listen for incoming messages
     // you can verify the webhook URL and make the server publicly available    
-    await bot.startExpressServer({
+    await singletonBot?.startExpressServer({
       app,
       webhookVerifyToken,
     });
 
     // Listen to ALL incoming messages
-    bot.on('message', async (msg) => {
-      console.log('[server]: Message received', msg)
-      console.log('from:', msg.from)
+    singletonBot?.on('message', async (msg) => {
+      console.log(`[server]: Message received from: ${msg.from}`, msg.data)
 
-      await bot.sendText(msg.from, 'Received your text message!');
+      await singletonBot?.sendText(msg.from, 'Received your text message!');
     });
   } catch (err) {
     console.log(err);
