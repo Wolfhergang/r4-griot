@@ -8,11 +8,6 @@ const PORT = process.env.PORT || 3000
 const app = express();
 
 app.use(express.json());
-app.use((req, _, next) => {
-  console.log("Request received")
-  console.log('body', req.body)
-  next()
-})
 
 const config: BotConfig = {
   WEBHOOK_VERIFICATION_TOKEN: process.env.WEBHOOK_VERIFICATION_TOKEN || "",
