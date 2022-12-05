@@ -80,7 +80,7 @@ const handleReceivingMessage = async (req: Request, res: Response, config: BotCo
     console.log('From:', from)
 
     // TODO: handle message.... somehow
-    await sendMessage(config, `This was your message: ${message}`, from)
+    await sendMessage(config, `This was your message: ${message}`, `${from.slice(0, 2) + from.slice(3)}`)
 
     res.sendStatus(200);
   } catch (error: any) {
