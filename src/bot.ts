@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
+import axios, { AxiosRequestConfig } from 'axios';
 
 const GRAPH_API_BASE_URL = 'https://graph.facebook.com/v15.0';
 
 const sendMessage = async (config: BotConfig, message: string, to: string) => {
-  const response = await fetch(`${GRAPH_API_BASE_URL}/${config.PHONE_ID}/messages`, {
-    method: 'POST',
+  const axiosRequestData: AxiosRequestConfig = {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${config.TOKEN}`
+      Authorization: `Bearer ${config.TOKEN}`
     },
-    body: JSON.stringify({
+    data: {
       "messaging_product": "whatsapp",
       "recipient_type": "individual",
       to,
@@ -18,10 +18,10 @@ const sendMessage = async (config: BotConfig, message: string, to: string) => {
         "preview_url": false,
         "body": message
       }
-    }),
-  })
+    }
+  }
 
-  return true
+  return axios.post(`${GRAPH_API_BASE_URL}/${config.PHONE_ID}/messages`, axiosRequestData)
 }
 
 export type BotConfig = {
@@ -63,8 +63,6 @@ type WhatsappMessageBody = {
 const handleReceivingMessage = async (req: Request, res: Response, config: BotConfig) => {
   try {
     const messageEntry = req.body as WhatsappMessageBody;
-
-    console.log('messageEntry',JSON.stringify(messageEntry.entry[0].changes))
     
     const {
       from,
@@ -77,12 +75,12 @@ const handleReceivingMessage = async (req: Request, res: Response, config: BotCo
       return res.sendStatus(501);
     }
   
-    // TODO: handle message.... somehow
     const message = rest.text.body;
-
+    
     console.log('Received message:', message)
     console.log('From:', from)
-
+    
+    // TODO: handle message.... somehow
     await sendMessage(config, `This was your message: ${message}`, from)
   
     res.sendStatus(200);
