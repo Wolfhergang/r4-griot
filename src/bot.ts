@@ -64,7 +64,7 @@ const handleReceivingMessage = async (req: Request, res: Response, config: BotCo
   try {
     const messageEntry = req.body as WhatsappMessageBody;
 
-    console.log('messageEntry', messageEntry.entry)
+    console.log('messageEntry',JSON.stringify(messageEntry.entry[0].changes))
     
     const {
       from,
@@ -79,6 +79,10 @@ const handleReceivingMessage = async (req: Request, res: Response, config: BotCo
   
     // TODO: handle message.... somehow
     const message = rest.text.body;
+
+    console.log('Received message:', message)
+    console.log('From:', from)
+
     await sendMessage(config, `This was your message: ${message}`, from)
   
     res.sendStatus(200);
