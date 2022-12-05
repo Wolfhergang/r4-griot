@@ -104,6 +104,10 @@ const handleWebhookVerification = (req: Request, res: Response, config: BotConfi
 
 const botHandlerFactory = (config: BotConfig) => {
   const botHandler = async (req: Request, res: Response) => {
+    console.log('Request method:', req.method)
+    console.log('Received request:', req.body)
+    console.log('Received query:', req.query)
+
     if(req.method === 'GET') {
       return handleWebhookVerification(req, res, config)
     }
