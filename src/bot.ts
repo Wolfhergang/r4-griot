@@ -44,7 +44,7 @@ enum MessageType {
 
 type WhatsappMessageBody = {
   object: 'whatsapp_business_account',
-  entry: {
+  entry: Array<{
     id: string,
     changes: Array<{
       value: {
@@ -57,18 +57,20 @@ type WhatsappMessageBody = {
         }>,
       }
     }>,
-  }
+  }>
 }
 
 const handleReceivingMessage = async (req: Request, res: Response, config: BotConfig) => {
   try {
     const messageEntry = req.body as WhatsappMessageBody;
+
+    console.log('messageEntry', messageEntry.entry)
     
     const {
       from,
       type,
       ...rest
-    } = messageEntry.entry.changes[0].value.messages[0];
+    } = messageEntry.entry[0].changes[0].value.messages[0];
   
     if(type !== MessageType.TEXT) {
       // Not supporting other types of messages... yet
