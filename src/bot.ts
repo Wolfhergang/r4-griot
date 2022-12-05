@@ -29,6 +29,8 @@ const initializeBot = async (config: BotConfig, app: Application) => {
     // Listen to ALL incoming messages
     bot.on('message', async (msg) => {
       console.log('[server]: Message received', msg)
+      console.log('from:', msg.from)
+
       await bot.sendText(msg.from, 'Received your text message!');
     });
   } catch (err) {

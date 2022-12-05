@@ -10,9 +10,7 @@ const app = express();
 app.use(express.json());
 app.use((req, _, next) => {
   console.log("Request received")
-  console.log('METHOD', req.method)
-  console.log('URL', req.url)
-  console.log('body', req.body?.entry?.changes)
+  console.log('body', req.body)
   next()
 })
 
