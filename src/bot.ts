@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const GRAPH_API_BASE_URL = 'https://graph.facebook.com/v15.0';
 
@@ -83,8 +83,8 @@ const handleReceivingMessage = async (req: Request, res: Response, config: BotCo
     await sendMessage(config, `This was your message: ${message}`, from)
 
     res.sendStatus(200);
-  } catch (error) {
-    console.error(error)
+  } catch (error: any) {
+    console.error(error.message)
     res.sendStatus(500)
   }
 }
