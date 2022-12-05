@@ -1,27 +1,26 @@
 import { Request, Response } from 'express';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 const GRAPH_API_BASE_URL = 'https://graph.facebook.com/v15.0';
 
 const sendMessage = async (config: BotConfig, message: string, to: string) => {
-  const axiosRequestData: AxiosRequestConfig = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${config.TOKEN}`
-    },
-    data: {
+  return axios.post(`${GRAPH_API_BASE_URL}/${config.PHONE_ID}/messages`,
+    {
       "messaging_product": "whatsapp",
       "recipient_type": "individual",
       to,
       "type": "text",
-      "text": { 
+      "text": {
         "preview_url": false,
         "body": message
       }
+    }, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${config.TOKEN}`
     }
   }
-
-  return axios.post(`${GRAPH_API_BASE_URL}/${config.PHONE_ID}/messages`, axiosRequestData)
+  )
 }
 
 export type BotConfig = {
@@ -63,26 +62,26 @@ type WhatsappMessageBody = {
 const handleReceivingMessage = async (req: Request, res: Response, config: BotConfig) => {
   try {
     const messageEntry = req.body as WhatsappMessageBody;
-    
+
     const {
       from,
       type,
       ...rest
     } = messageEntry.entry[0].changes[0].value.messages[0];
-  
-    if(type !== MessageType.TEXT) {
+
+    if (type !== MessageType.TEXT) {
       // Not supporting other types of messages... yet
       return res.sendStatus(501);
     }
-  
+
     const message = rest.text.body;
-    
+
     console.log('Received message:', message)
     console.log('From:', from)
-    
+
     // TODO: handle message.... somehow
     await sendMessage(config, `This was your message: ${message}`, from)
-  
+
     res.sendStatus(200);
   } catch (error) {
     console.error(error)
@@ -116,11 +115,11 @@ const botHandlerFactory = (config: BotConfig) => {
     console.log('Received request:', req.body)
     console.log('Received query:', req.query)
 
-    if(req.method === 'GET') {
+    if (req.method === 'GET') {
       return handleWebhookVerification(req, res, config)
     }
-    
-    if(req.method === 'POST') {
+
+    if (req.method === 'POST') {
       return handleReceivingMessage(req, res, config)
     }
   }
