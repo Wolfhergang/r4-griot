@@ -17,6 +17,8 @@ const initializeBot = async (config: BotConfig, app: Application) => {
     // Create a bot that can send messages
     const bot : Bot = createBot(from, token);
 
+    console.log('[server]: Bot created, token:', token.slice(0, 5)+'...')
+
     // Start express server to listen for incoming messages
     // you can verify the webhook URL and make the server publicly available    
     await bot.startExpressServer({
