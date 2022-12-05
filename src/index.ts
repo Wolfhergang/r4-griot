@@ -1,31 +1,26 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
+import initializeBot, { BotConfig } from './bot';
+import express from 'express';
+import ServerlessHttp from 'serverless-http';
 
-import { createBot, Bot } from 'whatsapp-cloud-api';
+const PORT = process.env.PORT || 3000;
+const app = express();
 
-(async () => {
-  try {
-    // replace the values below
-    const webhookVerifyToken : string = process.env.WEBHOOK_VERIFICATION_TOKEN || '';
-    const from : string = process.env.PHONE_ID || '';
-    const token : string = process.env.TOKEN || '';
-    
-    // Create a bot that can send messages
-    const bot : Bot = createBot(from, token);
+const config: BotConfig = {
+  WEBHOOK_VERIFICATION_TOKEN: process.env.WEBHOOK_VERIFICATION_TOKEN || "",
+  PHONE_ID: process.env.PHONE_ID || "",
+  TOKEN: process.env.TOKEN || "",
+}
 
-    // Start express server to listen for incoming messages
-    // you can verify the webhook URL and make the server publicly available    
-    await bot.startExpressServer({
-      webhookVerifyToken,
-    });
+initializeBot(config, app).then(() => {
+  console.log('[server]: Bot initialized')
+})
 
-    // Listen to ALL incoming messages
-    bot.on('message', async (msg) => {
-      console.log(msg);
+app.get('/', (req, res) => {
+  res.send('health check: ok');
+});
 
-      await bot.sendText(msg.from, 'Received your text message!');
-    });
-  } catch (err) {
-    console.log(err);
-  }
-})();
+// app.listen(PORT, () => { console.log(`[server]: Server is running at port:${PORT}`) });
+
+export const handler = ServerlessHttp(app);
