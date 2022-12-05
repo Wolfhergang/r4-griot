@@ -30,6 +30,6 @@ app.get('/', (req, res) => {
   res.send('health check: ok')
 })
 
-// app.listen(PORT, () => { console.log(`[server]: Server is running at port:${PORT}`) })
+app.listen(PORT, () => { console.log(`[server]: Server is running at port:${PORT}`) })
 
 export const handler = serverlessExpress({ app })

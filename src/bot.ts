@@ -19,7 +19,7 @@ const initializeBot = async (config: BotConfig, app: Application) => {
 
     // Start express server to listen for incoming messages
     // you can verify the webhook URL and make the server publicly available    
-    const expressApp = await bot.startExpressServer({
+    await bot.startExpressServer({
       app,
       webhookVerifyToken,
     });
