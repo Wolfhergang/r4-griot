@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 import initializeBot, { BotConfig } from './bot';
 import express from 'express';
-import ServerlessHttp from 'serverless-http';
+import serverlessExpress from '@vendia/serverless-express';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -23,4 +23,4 @@ app.get('/', (req, res) => {
 
 // app.listen(PORT, () => { console.log(`[server]: Server is running at port:${PORT}`) });
 
-export const handler = ServerlessHttp(app);
+export const handler = serverlessExpress({ app });

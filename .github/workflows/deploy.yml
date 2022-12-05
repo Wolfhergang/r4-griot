@@ -20,7 +20,7 @@ jobs:
         run: |
           npm run build
       - name: Wrap it up...
-        run: zip -r bundle.zip ./index.js ./package.json ./package-lock.json ./node_modules
+        run: zip -r bundle.zip ./build ./package.json ./package-lock.json ./node_modules
       - name: default deploy
         uses: appleboy/lambda-action@master
         with:
