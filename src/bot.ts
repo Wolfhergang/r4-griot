@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 const GRAPH_API_BASE_URL = 'https://graph.facebook.com/v15.0';
 
-const sendMessage = async (config: BotConfig, message: string) => {
+const sendMessage = async (config: BotConfig, message: string, to: string) => {
   const response = await fetch(`${GRAPH_API_BASE_URL}/${config.PHONE_ID}/messages`, {
     method: 'POST',
     headers: {
@@ -12,7 +12,7 @@ const sendMessage = async (config: BotConfig, message: string) => {
     body: JSON.stringify({
       "messaging_product": "whatsapp",
       "recipient_type": "individual",
-      "to": "PHONE_NUMBER",
+      to,
       "type": "text",
       "text": { 
         "preview_url": false,
@@ -73,7 +73,7 @@ const handleReceivingMessage = async (req: Request, res: Response, config: BotCo
   
     // TODO: handle message.... somehow
     const message = rest.text.body;
-    await sendMessage(config, `This was your message: ${message}`)
+    await sendMessage(config, `This was your message: ${message}`, from)
   
     res.sendStatus(200);
   } catch (error) {
