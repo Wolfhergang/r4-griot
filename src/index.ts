@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
-import initializeBot, { BotConfig } from './bot'
+import botHandlerFactory, { BotConfig } from './bot'
 import express from 'express'
 import serverlessExpress from '@vendia/serverless-express'
 
@@ -15,13 +15,11 @@ const config: BotConfig = {
   TOKEN: process.env.TOKEN || "",
 }
 
-initializeBot(config, app).then(() => {
-  console.log('[server]: Bot initialized')
-})
-
 app.get('/', (req, res) => {
   res.send('health check: ok')
 })
+
+app.all('/bot', botHandlerFactory(config))
 
 app.listen(PORT, () => { console.log(`[server]: Server is running at port:${PORT}`) })
 
