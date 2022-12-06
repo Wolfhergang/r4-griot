@@ -77,6 +77,8 @@ const handleReceivingMessage = async (req: Request, res: Response, config: BotCo
 
     const message = rest.text.body;
 
+    console.log('Received message:', message)
+
     const responses = await actionsHandler(message);
     
     for (const response of responses) {
@@ -85,6 +87,7 @@ const handleReceivingMessage = async (req: Request, res: Response, config: BotCo
     
     res.sendStatus(200);
   } catch (error: any) {
+    console.log('Error:', error)
     console.error(error.message)
     res.sendStatus(500)
   }
