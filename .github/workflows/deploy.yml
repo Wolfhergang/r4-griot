@@ -18,9 +18,9 @@ jobs:
           npm i
       - name: Build and prepare...
         run: |
-          npm run build && cp -r ./build/* .
+          npm run build && cp -r ./package.json ./package-lock.json ./node_modules ./build/
       - name: Wrap it up...
-        run: zip -r bundle.zip ./*.js ./package.json ./package-lock.json ./node_modules
+        run: zip -r bundle.zip ./dist
       - name: default deploy
         uses: appleboy/lambda-action@master
         with:
