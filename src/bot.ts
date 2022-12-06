@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
+import actionsHandler from './actions';
 
 const GRAPH_API_BASE_URL = 'https://graph.facebook.com/v15.0';
 
-const sendMessage = async (config: BotConfig, message: string, to: string) => {
+export const sendMessage = async (config: BotConfig, message: string, to: string) => {
   return axios.post(`${GRAPH_API_BASE_URL}/${config.PHONE_ID}/messages`,
     {
       "messaging_product": "whatsapp",
@@ -76,12 +77,12 @@ const handleReceivingMessage = async (req: Request, res: Response, config: BotCo
 
     const message = rest.text.body;
 
-    console.log('Received message:', message)
-    console.log('From:', from)
-
-    // TODO: handle message.... somehow
-    await sendMessage(config, `This was your message: ${message}`, `${from.slice(0, 2) + from.slice(3)}`)
-
+    const responses = await actionsHandler(message);
+    
+    for (const response of responses) {
+      await sendMessage(config, response, from);
+    }
+    
     res.sendStatus(200);
   } catch (error: any) {
     console.error(error.message)
