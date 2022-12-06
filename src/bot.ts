@@ -82,7 +82,7 @@ const handleReceivingMessage = async (req: Request, res: Response, config: BotCo
     const responses = await actionsHandler(message);
     
     for (const response of responses) {
-      await sendMessage(config, response, from);
+      await sendMessage(config, response, `${from.slice(0, 2)}${from.slice(3)}`);
     }
     
     res.sendStatus(200);
